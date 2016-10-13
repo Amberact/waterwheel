@@ -18,23 +18,23 @@ var rimraf = require('rimraf');
 
 
 router.get('/*/waterwheel*', (req, res) => {
-    let pathname = url.parse(req.url).pathname;
-    let tpath = pathname.substr(1);
-    //console.log(111111)
-    let uuids=tpath.split('/')
-    //console.log(tpath)
-    if(uuids.length>4)return res.status(400).json('')
-    if(uuids.length===4){
-        let re = storage.getRequest(uuids[2],uuids[3])
-        if(!re) return res.status(404).json('request not found') 
-        return res.status(200).json(re) 
-    }
-    if(uuids.length===3){
-        let re =storage.getWaterWheelByNas(uuids[0])
-        if(!re) return res.status(404).json('request not found') 
-        return res.status(200).json(re) 
-    }
-    let result=storage.getWaterWheel(uuids[2])
+  let pathname = url.parse(req.url).pathname;
+  let tpath = pathname.substr(1);
+  //console.log(111111)
+  let uuids=tpath.split('/')
+  //console.log(tpath)
+  if(uuids.length>4)return res.status(400).json('')
+  if(uuids.length===4){
+      let re = storage.getRequest(uuids[2],uuids[3])
+      if(!re) return res.status(404).json('request not found') 
+      return res.status(200).json(re) 
+  }
+  if(uuids.length===3){
+      let re =storage.getWaterWheelByNas(uuids[0])
+      if(!re) return res.status(404).json('waterwheel not found') 
+      return res.status(200).json(re) 
+  }
+  let result=storage.getWaterWheel(uuids[2])
 	if(!result)return res.status(404).json('waterwheel not found')
 	return res.status(200).json(result)
 	//}
@@ -158,7 +158,7 @@ router.post('/*/waterwheel*',(req,res)=>{
       }
       catch(e){
       }
-    	return res.status(200).json('')
+    	return res.status(200).json(newrequest)
     }
     let result= storage.waterWheelBundle(uuids[0])
     if(!result)return res.status(404).json('nas not found')
@@ -190,7 +190,12 @@ router.patch('/*/waterwheel*',(req,res)=>{
   if(uuids.length===4){
   	let re=storage.updateRequest(uuids[2],uuids[3],req.body.status)
     if(!re)return res.status(400).json('failed')
-  	return res.status(200).json('updated request')
+  	return res.status(200).json('request updated')
+  }
+  if(uuids.length===5){
+    let re=storage.updateResource(uuids[2],uuids[3],uuids[4],req.body.status)
+    if(!re)return res.status(400).json('failed')
+    return res.status(200).json('resource updated')
   }
 	return res.status(404).json('request not found')
     //else 

@@ -23,9 +23,6 @@ if (env !== 'production' && env !== 'development' && env !== 'test') {
 } else {
   console.log('NODE_ENV is set to ' + env);
 }
-var broker = require("./lib/broker")
-var cstorage = require('./lib/storage').createStorage
-global.storage = cstorage()
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
@@ -60,22 +57,6 @@ app.use(function(err, req, res, next) {
 /**
  * Module dependencies.
  */
-var io = require("socket.io").listen(12450);
-io.sockets.on('connection', function(socket){
-  var id = socket.id;
-  socket.on('register', function(msg){
-    socket.emit('register1',broker.register(msg))
-  });
-
-  socket.on('statuson', function(msg){
-    broker.statuson(msg,socket)
-  });
-
-  socket.on('disconnect',function(){
-    console.log(222222)
-    broker.statusoff(id)
-  });
-});
 
 // var app = require('../build/app');
 

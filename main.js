@@ -2,6 +2,9 @@ var debug = require('debug')('myapp:server');
 var http = require('http');
 var app = require('./app')
 var port = normalizePort(process.env.PORT || '80');
+var broker = require("./lib/broker")
+var cstorage = require('./lib/storage').createStorage
+global.storage = cstorage()
 app.set('port', port);
 
 /**
@@ -20,6 +23,23 @@ server.timeout = 100000000000;
 /**
  * Normalize a port into a number, string, or false.
  */
+
+var io = require("socket.io").listen(server);
+io.sockets.on('connection', function(socket){
+  var id = socket.id;
+  socket.on('register', function(msg){
+    socket.emit('register1',broker.register(msg))
+  });
+
+  socket.on('statuson', function(msg){
+    broker.statuson(msg,socket)
+  });
+
+  socket.on('disconnect',function(){
+    console.log(222222)
+    broker.statusoff(id)
+  });
+});
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
