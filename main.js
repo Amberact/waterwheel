@@ -28,15 +28,16 @@ var io = require("socket.io").listen(server);
 io.sockets.on('connection', function(socket){
   var id = socket.id;
   socket.on('register', function(msg){
-    socket.emit('register1',broker.register(msg))
+    let re = broker.register(msg)
+    if(!re)socket.disconnect()
+    else socket.emit('register1',re)
   });
 
   socket.on('statuson', function(msg){
-    broker.statuson(msg,socket)
+    if(!broker.statuson(msg,socket))socket.disconnect()
   });
 
   socket.on('disconnect',function(){
-    console.log(222222)
     broker.statusoff(id)
   });
 });
